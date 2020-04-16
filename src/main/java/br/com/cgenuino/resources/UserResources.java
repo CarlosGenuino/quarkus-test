@@ -1,7 +1,7 @@
 package br.com.cgenuino.resources;
 
-import br.com.cgenuino.domain.Produto;
-import br.com.cgenuino.dto.CriarProdutoDTO;
+import br.com.cgenuino.domain.User;
+import br.com.cgenuino.dto.CriarUserDTO;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
@@ -9,20 +9,20 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Optional;
 
-@Path("/produtos")
+@Path("/users")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class ProdutoResources {
+public class UserResources {
 
     @GET
-    public List<Produto> listar() {
-        return Produto.listAll();
+    public List<User> listar() {
+        return User.listAll();
     }
 
     @GET
     @Path("{id}")
-    public Produto buscarPorId(@PathParam("id") Long id){
-        Optional<Produto> opt = Produto.findByIdOptional(id);
+    public User buscarPorId(@PathParam("id") Long id){
+        Optional<User> opt = User.findByIdOptional(id);
         if (opt.isPresent())
             return opt.get();
         else
@@ -32,20 +32,21 @@ public class ProdutoResources {
 
     @POST
     @Transactional
-    public void cadastrar(CriarProdutoDTO produtoDTO){
-        Produto p = new Produto();
-        p.setNome(produtoDTO.getNome());
-        p.setValor(produtoDTO.getValor());
+    public void cadastrar(CriarUserDTO UserDTO){
+        User p = new User();
+        p.setNome(UserDTO.getNome());
+        p.setEmail(UserDTO.getEmail());
+        p.setPassword(UserDTO.getPassword());
         p.persist();
     }
 
     @PUT
     @Path("{id}")
     @Transactional
-    public void atualizar(@PathParam("id") Long id, CriarProdutoDTO produtoDTO){
-        Optional<Produto> p = Produto.findByIdOptional(id);
+    public void atualizar(@PathParam("id") Long id, CriarUserDTO UserDTO){
+        Optional<User> p = User.findByIdOptional(id);
         if(p.isPresent()) {
-            p.get().setValor(produtoDTO.getValor());
+            p.get().setNome(UserDTO.getNome());
             p.get().persist();
         }else{
             throw new NotFoundException();
@@ -56,7 +57,7 @@ public class ProdutoResources {
     @Path("{id}")
     @Transactional
     public void deletar(@PathParam("id") Long id){
-        Optional<Produto> p = Produto.findByIdOptional(id);
+        Optional<User> p = User.findByIdOptional(id);
         if(p.isPresent()) {
             p.get().delete();
         }else{
